@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">Weather Forecast</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="scuttered_clouds">Scuttered Clouds</string>
+    <string name="max_min_temp">255 / 255°k</string>
+    <string name="temperature_degree">29</string>
+    <string name="temperature_unit">°C</string>
+    <string name="time">12 PM</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
+    <string name="ultra_violet">Ultra Violet</string>
+    <string name="visibility">Visibility</string>
+    <string name="sunrise">SunRise</string>
+    <string name="sunset">SunSet</string>
+    <string name="behira_governrate">Behira Governrate</string>
+    <string name="main_date">21 Mars 2024</string>
+    <string name="clear_sky">Clear Sky</string>
+    <string name="home">Home</string>
+    <string name="favourite">Favourite</string>
+    <string name="alert">Alert</string>
+    <string name="settings">Settings</string>
 </resources>

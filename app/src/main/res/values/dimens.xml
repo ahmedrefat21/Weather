@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Margin dimens-->
+    <dimen name="margin_tiny">4dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="margin_giant">32dp</dimen>
+    <dimen name="margin_negative">-48dp</dimen>
+    <dimen name="margin_recycler">86dp</dimen>
+
+    <!--padding dimens-->
+    <dimen name="padding_tiny">4dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_semi_medium">10dp</dimen>
+    <dimen name="padding_12">12dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+    <dimen name="padding_giant">32dp</dimen>
+
+    <!--text dimens-->
+    <dimen name="text_tiny">12sp</dimen>
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_large">20sp</dimen>
+    <dimen name="text_giant">28sp</dimen>
+    <dimen name="text_temp">85sp</dimen>
+
+    <!--home dimens-->
+    <dimen name="card_corner_radius">20dp</dimen>
+    <dimen name="progress_bar_dimens">100dp</dimen>
+
+
+
+    <dimen name="zero_dimens">0dp</dimen>
+    <dimen name="card_image_height">125dp</dimen>
+</resources>
