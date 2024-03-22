@@ -7,10 +7,25 @@
     tools:context=".home.view.HomeFragment">
 
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_medium">
+
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loading"
+            android:layout_width="match_parent"
+            android:layout_height="600dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loading" />
 
         <TextView
             android:id="@+id/tvCurrentAddress"
@@ -20,7 +35,6 @@
             android:fontFamily="@font/cairo_semibold"
             android:gravity="center"
             android:singleLine="true"
-            android:text="@string/behira_governrate"
             android:textColor="@color/dark_gray"
             android:textSize="@dimen/text_giant"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +49,6 @@
             android:layout_marginTop="@dimen/margin_small"
             android:fontFamily="@font/cairo_semibold"
             android:gravity="center"
-            android:text="@string/main_date"
             android:textColor="@color/dark_gray"
             android:textSize="@dimen/text_large"
             app:layout_constraintEnd_toEndOf="@+id/tvCurrentAddress"
@@ -50,7 +63,7 @@
             android:layout_marginTop="@dimen/margin_medium"
             android:background="@drawable/card_background"
             android:paddingBottom="@dimen/padding_large"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvDate">
@@ -106,16 +119,15 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/currentTempLayout"
-            app:srcCompat="@drawable/clear_day_24" />
+            app:layout_constraintTop_toBottomOf="@+id/currentTempLayout" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvHourly"
-            android:layout_width="@dimen/zero_dimens"
-            android:layout_height="wrap_content"
+            android:layout_width="371dp"
+            android:layout_height="101dp"
             android:layout_marginTop="@dimen/margin_recycler"
             android:orientation="horizontal"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/margin_large"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rvHourly"
@@ -140,7 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_small"
             android:padding="@dimen/padding_medium"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardCornerRadius="@dimen/card_corner_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -306,7 +318,7 @@
             android:layout_width="@dimen/zero_dimens"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_small"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardCornerRadius="@dimen/card_corner_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
