@@ -58,4 +58,25 @@ dependencies {
     //Navigation
     implementation ("androidx.navigation:navigation-fragment:2.5.3")
     implementation ("androidx.navigation:navigation-ui:2.5.3")
+
+    //Retrofit
+    implementation ("com.google.code.gson:gson:2.10.1")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.google.android.gms:play-services-location:21.1.0")
+    implementation("androidx.preference:preference-ktx:1.2.1")
+
+    //Glide
+    implementation ("com.github.bumptech.glide:glide:4.13.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
+
+    //Room
+    implementation ("androidx.room:room-ktx:2.6.1")
+    implementation ("androidx.room:room-runtime:2.6.1")
+    //kapt ("androidx.room:room-compiler:2.6.1")
+    //Coroutine
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+    //ViewModel
+    implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
 }
