@@ -1,4 +1,10 @@
+package com.example.weatherforecast.model
+
+
+
+
 data class WeatherResponse(
+    val id : Int = 0,
     val alerts: List<Alert>,
     val current: Current,
     val daily: List<Daily>,
@@ -8,6 +14,9 @@ data class WeatherResponse(
     val timezone: String,
     val timezone_offset: Int
 )
+//{
+//    constructor():this(1, emptyList(),null, emptyList(), emptyList(),0.0,0.0,"",0)
+//}
 
 data class Alert(
     val description: String,
@@ -25,12 +34,12 @@ data class Current(
     val feels_like: Double,
     val humidity: Int,
     val pressure: Int,
-    val sunrise: Int,
-    val sunset: Int,
+    val sunrise: Long,
+    val sunset: Long,
     val temp: Double,
     val uvi: Double,
     val visibility: Int,
-    val weather: List<Weather>,
+    var weather: List<Weather>,
     val wind_deg: Int,
     val wind_speed: Double
 )
@@ -69,7 +78,7 @@ data class Hourly(
     val temp: Double,
     val uvi: Double,
     val visibility: Int,
-    val weather: List<Weather>,
+    var weather: List<Weather>,
     val wind_deg: Int,
     val wind_gust: Double,
     val wind_speed: Double
@@ -77,7 +86,7 @@ data class Hourly(
 
 data class Weather(
     val description: String,
-    val icon: String,
+    var icon: String,
     val id: Int,
     val main: String
 )

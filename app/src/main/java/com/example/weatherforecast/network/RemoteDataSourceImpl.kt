@@ -1,6 +1,7 @@
 package com.example.weatherforecast.network
 
-import WeatherResponse
+import com.example.weatherforecast.model.WeatherResponse
+
 
 class RemoteDataSourceImpl private constructor() : RemoteDataSource {
 
