@@ -18,6 +18,7 @@ import com.example.weatherforecast.helpers.getLocationName
 import com.example.weatherforecast.helpers.getDate
 import com.example.weatherforecast.helpers.getHour
 import com.example.weatherforecast.home.view.DayAdapter
+import com.example.weatherforecast.home.view.HourAdapter
 import com.example.weatherforecast.home.viewmodel.HomeViewModel
 import com.example.weatherforecast.home.viewmodel.HomeViewModelFactory
 import com.example.weatherforecast.local.LocalDataSourceImp
@@ -26,7 +27,6 @@ import com.example.weatherforecast.model.entity.FavoriteEntity
 import com.example.weatherforecast.model.RepositoryImpl
 import com.example.weatherforecast.model.WeatherResponse
 import com.example.weatherforecast.network.RemoteDataSourceImpl
-import com.example.weatherproject.Home.view.HourAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

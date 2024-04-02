@@ -1,6 +1,6 @@
 package com.example.weatherforecast.home.view
 
-import WeatherResponse
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,16 +23,23 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.weatherforecast.prefernces.SharedPreference
 import com.example.weatherforecast.databinding.FragmentHomeBinding
-import com.example.weatherforecast.helpers.getAddressEnglish
-import com.example.weatherforecast.helpers.getCurrentTime
+import com.example.weatherforecast.helpers.checkNetworkConnection
+import com.example.weatherforecast.helpers.getLocationName
+import com.example.weatherforecast.helpers.getDate
+import com.example.weatherforecast.helpers.getHour
 import com.example.weatherforecast.home.viewmodel.HomeViewModel
 import com.example.weatherforecast.home.viewmodel.HomeViewModelFactory
+import com.example.weatherforecast.local.LocalDataSourceImp
 import com.example.weatherforecast.model.ApiState
+import com.example.weatherforecast.model.CurrentState
 import com.example.weatherforecast.model.RepositoryImpl
+import com.example.weatherforecast.model.WeatherResponse
+import com.example.weatherforecast.model.entity.HomeEntity
 import com.example.weatherforecast.network.RemoteDataSourceImpl
-import com.example.weatherproject.Home.view.HourAdapter
-
+import com.example.weatherforecast.settings.viewmodel.SettingsViewModel
+import com.example.weatherforecast.settings.viewmodel.SettingsViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -48,12 +55,17 @@ class HomeFragment : Fragment() {
     private lateinit var binding : FragmentHomeBinding
     lateinit var fusedLocationProviderClient : FusedLocationProviderClient
     val PERMISSION_ID = 1010
-    private lateinit var viewModel : HomeViewModel
-    private lateinit var homeFactory : HomeViewModelFactory
-    private lateinit var hourAdapter: HourAdapter
-    private lateinit var hourLayoutManager: LinearLayoutManager
     private lateinit var dayAdapter: DayAdapter
     private lateinit var dayLayoutManager: LinearLayoutManager
+    private lateinit var hourAdapter: HourAdapter
+    private lateinit var hourLayoutManager: LinearLayoutManager
+    private lateinit var homeViewModel : HomeViewModel
+    private lateinit var settingsViewModel : SettingsViewModel
+    private lateinit var settingsFactory: SettingsViewModelFactory
+    private lateinit var homeFactory : HomeViewModelFactory
+    private lateinit var  sharedPreference: SharedPreference
+    private lateinit var entityHome: HomeEntity
+    private val TAG = "HomeFragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,30 +82,9 @@ class HomeFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
-        homeFactory=HomeViewModelFactory(
-            RepositoryImpl.getInstance(
-                RemoteDataSourceImpl.getInstance()))
-        viewModel = ViewModelProvider(this,homeFactory)[HomeViewModel::class.java]
-
-        dayLayoutManager = LinearLayoutManager(requireContext(),  RecyclerView.VERTICAL, false)
-        dayAdapter = DayAdapter(requireContext())
-        binding.rvDaily.apply {
-            adapter = dayAdapter
-            layoutManager = dayLayoutManager
-        }
-
-        hourLayoutManager = LinearLayoutManager(requireContext(),  RecyclerView.HORIZONTAL, false)
-        hourAdapter = HourAdapter(requireContext())
-        binding.rvHourly.apply {
-            adapter = hourAdapter
-            layoutManager = hourLayoutManager
-        }
-
-
-        
+        initViewModel()
+        setUpDayRecyclerView()
+        setUpHourRecyclerView()
 
     }
 
@@ -110,6 +101,21 @@ class HomeFragment : Fragment() {
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_COARSE_LOCATION),
                 PERMISSION_ID)
         }
+    }
+
+    private fun initViewModel(){
+        homeFactory=HomeViewModelFactory(
+            RepositoryImpl.getInstance(
+                RemoteDataSourceImpl.getInstance(), LocalDataSourceImp(requireContext()))
+        )
+
+        homeViewModel = ViewModelProvider(this,homeFactory)[HomeViewModel::class.java]
+
+        settingsFactory=SettingsViewModelFactory(SharedPreference.getInstance(requireContext()))
+
+
+        settingsViewModel =
+            ViewModelProvider(this, settingsFactory)[SettingsViewModel::class.java]
     }
 
     private fun checkPermission(): Boolean {
@@ -159,30 +165,13 @@ class HomeFragment : Fragment() {
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
                     val location = locationResult.lastLocation
-                    viewModel.getWeather(location?.latitude!!,location?.longitude!!,"metric","en")
-                    lifecycleScope.launch {
-                        viewModel.weather.collectLatest { result ->
-                            when(result){
-                                is ApiState.Loading ->{
-                                    Log.i("loading", "Loading: ")
-                                    loading()
-
-                                }
-
-                                is ApiState.Success ->{
-                                    success()
-                                    initUI(result.weather)
-                                    hourAdapter.submitList(result.weather.hourly)
-                                    dayAdapter.submitList(result.weather.daily)
-                                }
-
-                                else ->{
-                                    Log.i("Error", "Error: ")
-                                }
-                            }
-
-                        }
+                    SharedPreference.getInstance(requireContext()).setLatAndLonHome(location?.latitude!!,location?.longitude!!)
+                    if (checkNetworkConnection(requireContext())){
+                        getHomeWeather(location?.latitude!!,location?.longitude!!)
+                    }else{
+                        getWeatherFromDB()
                     }
+
                     fusedLocationProviderClient.removeLocationUpdates(this);
                 }
             },
@@ -190,24 +179,128 @@ class HomeFragment : Fragment() {
         )
     }
 
+
+    fun getHomeWeather(lat: Double?, lon: Double?){
+        var language : String? = null
+        settingsViewModel.changeLanguageShared("ar")
+        lifecycleScope.launch {
+            settingsViewModel.language.collect(){
+                language = it
+                Log.d(TAG, "language" + language)
+            }
+        }
+
+        homeViewModel.getWeather(lat!!,lon!!,
+            SharedPreference.getInstance(requireContext()).getUnit(),
+            SharedPreference.getInstance(requireContext()).getLanguage())
+        lifecycleScope.launch {
+            homeViewModel.weather.collectLatest { result ->
+                when(result){
+                    is ApiState.Loading ->{
+                        loading()
+                    }
+
+                    is ApiState.Success ->{
+                        success()
+                        initUI(result.weather)
+                        //homeViewModel.deleteCurrentWeather()
+                        insertCurrentToDB(result.weather)
+                        Log.d(TAG, "refat showDialog: delay" + entityHome)
+                        homeViewModel.insertCurrentWeather(entityHome)
+                        hourAdapter.submitList(result.weather.hourly)
+                        dayAdapter.submitList(result.weather.daily)
+                    }
+
+                    else ->{
+                    }
+                }
+            }
+        }
+    }
+
+    private fun insertCurrentToDB(weather: WeatherResponse){
+        homeViewModel.deleteCurrentWeather()
+        entityHome = HomeEntity()
+        entityHome.lat = weather.lat
+        Log.d(TAG, "refat showDialog: weather.lat" + weather.lat)
+        entityHome.lon = weather.lon
+        Log.d(TAG, "refat showDialog: weather.lon" + weather.lon)
+        entityHome.current = weather.current
+        Log.d(TAG, "refat showDialog:weather.current" + weather.current)
+        entityHome.hourly = weather.hourly
+        Log.d(TAG, "refat showDialog: weather.hourly" + weather.hourly)
+        entityHome.daily = weather.daily
+        Log.d(TAG, "refat showDialog: weather.daily" + weather.daily)
+        entityHome.current!!.weather[0].icon = weather.current.weather[0].icon
+
+
+    }
+
+    fun getWeatherFromDB(){
+        homeViewModel.getCurrentWeather()
+        lifecycleScope.launch {
+            homeViewModel.current.collectLatest {result ->
+                when(result){
+                    is CurrentState.Loading ->{
+                        loading()
+                    }
+                    is CurrentState.Success ->{
+
+                        success()
+                        loadUI(result.homeEntity)
+                        hourAdapter.submitList(result.homeEntity.hourly)
+                        dayAdapter.submitList(result.homeEntity.daily)
+                    }
+                    else ->{
+
+                    }
+                }
+            }
+        }
+    }
+
     private fun initUI(weather : WeatherResponse){
-        binding.tvCurrentAddress.text = getAddressEnglish(requireActivity(), weather.lat, weather.lon)
-        binding.tvDate.text = getCurrentTime(weather.current.dt)
-        binding.tvTemp.text = weather.current.temp.toInt().toString()+" °C"
+        setWeatherUnit()
+        var weatherUnit = setWeatherUnit()
+        binding.tvCurrentAddress.text = getLocationName(requireActivity(), weather.lat, weather.lon)
+        binding.tvDate.text = getDate(requireActivity(),weather.current.dt)
+        binding.tvTemp.text = weather.current.temp.toInt().toString()
         binding.tvDescription.text  = weather.current.weather[0].description
         Glide.with(requireContext()).load("https://openweathermap.org/img/wn/"+ weather.current.weather[0].icon+"@4x.png")
             .into(binding.ivIcon)
-        binding.tvPressure.text = weather.current.pressure.toString()
-        //binding.tvHumidity.text = weather.current.humidity.toString()
-        binding.windSpeedValue.text = weather.current.wind_speed.toString()
+        binding.tvPressure.text = weather.current.pressure.toString()+" hpa"
+        binding.tvHumidity.text = weather.current.humidity.toString()+" %"
+        binding.windSpeedValue.text = weather.current.wind_speed.toString()+weatherUnit
         binding.windDegreeValue.text = weather.current.wind_deg.toString()
-        binding.tvHumidity.text = weather.current.clouds.toString()
-        binding.tvUltraviolet.text =weather.current.uvi.toString()
-        binding.tvVisibility.text = weather.current.visibility.toString()
-        binding.progressBarValue.text = weather.current.humidity.toString()
+        //binding.tvHumidity.text = weather.current.clouds.toString()
+        binding.tvUltraviolet.text =weather.current.uvi.toString()+" %"
+        binding.tvVisibility.text = weather.current.visibility.toString()+" m"
+        binding.progressBarValue.text = weather.current.humidity.toString()+" %"
         binding.feelsLikeValue.text = weather.current.feels_like.toString()
-        //binding.tvSunrise.text = weather.current.sunrise.toString()
-        //binding.tvSunset.text = weather.current.sunset.toString()
+        binding.tvSunrise.text = getHour(requireContext(),weather.current.sunrise)
+        binding.tvSunset.text = getHour(requireContext(),weather.current.sunset)
+
+    }
+
+    private fun loadUI(weather: HomeEntity){
+
+        binding.tvCurrentAddress.text = getLocationName(requireActivity(), weather.lat, weather.lon)
+        binding.tvDate.text = getDate(requireActivity(),weather.current!!.dt)
+        binding.tvTemp.text = weather.current!!.temp.toInt().toString()+" °C"
+        binding.tvDescription.text  = weather.current!!.weather[0].description
+        Glide.with(requireContext()).load("https://openweathermap.org/img/wn/"+ weather.current!!.weather[0].icon+"@4x.png")
+            .into(binding.ivIcon)
+        binding.tvPressure.text = weather.current!!.pressure.toString()
+        binding.tvHumidity.text = weather.current!!.humidity.toString()
+        binding.windSpeedValue.text = weather.current!!.wind_speed.toString()
+        binding.windDegreeValue.text = weather.current!!.wind_deg.toString()
+        //binding.tvHumidity.text = weather.current!!.clouds.toString()
+        binding.tvUltraviolet.text =weather.current!!.uvi.toString()
+        binding.tvVisibility.text = weather.current!!.visibility.toString()
+        binding.progressBarValue.text = weather.current!!.humidity.toString()
+        binding.feelsLikeValue.text = weather.current!!.feels_like.toString()
+        binding.tvSunrise.text = getHour(requireContext(),weather.current!!.sunrise)
+        binding.tvSunset.text = getHour(requireContext(),weather.current!!.sunset)
     }
 
     fun success(){
@@ -228,6 +321,42 @@ class HomeFragment : Fragment() {
         binding.windLayout.visibility = View.GONE
     }
 
+    private fun setUpDayRecyclerView() {
+        dayLayoutManager = LinearLayoutManager(requireContext(),  RecyclerView.VERTICAL, false)
+        dayAdapter = DayAdapter(requireContext())
+        binding.rvDaily.apply {
+            adapter = dayAdapter
+            layoutManager = dayLayoutManager
+        }
+    }
+
+    private fun setUpHourRecyclerView() {
+        hourLayoutManager = LinearLayoutManager(requireContext(),  RecyclerView.HORIZONTAL, false)
+        hourAdapter = HourAdapter(requireContext())
+        binding.rvHourly.apply {
+            adapter = hourAdapter
+            layoutManager = hourLayoutManager
+        }
+    }
+
+    fun setWeatherUnit(): String {
+        var unit : String
+        if (settingsViewModel.getTemperatureUnit() == "metric") {
+            binding.tvTempUnit.text = "°C"
+            unit = "mph"
+        }
+
+        else if (settingsViewModel.getTemperatureUnit() == "default") {
+            binding.tvTempUnit.text = "°K"
+            unit = "mph"
+        }else {
+            binding.tvTempUnit.text = "°F"
+            unit = "mps"
+        }
+        return unit
+
+
+    }
 
 
 }

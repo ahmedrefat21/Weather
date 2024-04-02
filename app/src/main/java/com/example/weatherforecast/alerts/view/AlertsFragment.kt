@@ -210,7 +210,7 @@ class AlertsFragment : Fragment() , AlertsOnClickListener{
         }else{
             //Toast.makeText()
             alertViewModel.showToast()
-            Log.d(TAG, "refat showDialog: a777a" )
+
         }
 
     }
