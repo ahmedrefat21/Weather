@@ -12,17 +12,17 @@
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/alertsFragment"
-        android:name="com.example.weatherforecast.AlertsFragment"
+        android:name="com.example.weatherforecast.alerts.view.AlertsFragment"
         android:label="fragment_alerts"
         tools:layout="@layout/fragment_alerts" />
     <fragment
         android:id="@+id/favouriteFragment"
-        android:name="com.example.weatherforecast.FavouriteFragment"
+        android:name="com.example.weatherforecast.favourite.view.FavouriteFragment"
         android:label="fragment_favourite"
         tools:layout="@layout/fragment_favourite" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.weatherforecast.SettingsFragment"
+        android:name="com.example.weatherforecast.settings.view.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

@@ -1,7 +1,8 @@
 package com.example.weatherforecast.network
 
-import WeatherResponse
+
 import com.example.weatherforecast.Constants
+import com.example.weatherforecast.model.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

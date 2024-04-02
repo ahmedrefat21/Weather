@@ -28,6 +28,7 @@
 
     <!--home dimens-->
     <dimen name="card_corner_radius">20dp</dimen>
+    <dimen name="card2_corner_radius">30dp</dimen>
     <dimen name="progress_bar_dimens">100dp</dimen>
 
 

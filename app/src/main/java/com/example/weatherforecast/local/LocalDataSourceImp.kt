@@ -4,7 +4,6 @@ package com.example.weatherforecast.local
 import android.content.Context
 import com.example.weatherforecast.model.entity.AlertEntity
 import com.example.weatherforecast.model.entity.FavoriteEntity
-import com.example.weatherforecast.model.WeatherResponse
 import com.example.weatherforecast.model.entity.HomeEntity
 import kotlinx.coroutines.flow.Flow
 

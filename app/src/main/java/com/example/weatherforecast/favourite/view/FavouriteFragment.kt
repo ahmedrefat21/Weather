@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.weatherforecast.prefernces.SharedPreference
 import com.example.weatherforecast.favourite.viewmodel.FavouriteViewModel
 import com.example.weatherforecast.favourite.viewmodel.FavouriteViewModelFactory
 import com.example.weatherforecast.model.FavouriteState
@@ -17,6 +18,7 @@ import com.example.weatherforecast.databinding.FragmentFavouriteBinding
 import com.example.weatherforecast.helpers.checkNetworkConnection
 import com.example.weatherforecast.helpers.createDialog
 import com.example.weatherforecast.local.LocalDataSourceImp
+import com.example.weatherforecast.map.view.MapFragment
 import com.example.weatherforecast.model.entity.FavoriteEntity
 import com.example.weatherforecast.model.RepositoryImpl
 import com.example.weatherforecast.network.RemoteDataSourceImpl
@@ -124,7 +126,18 @@ class FavouriteFragment : Fragment() , FavouriteClickListener {
     }
 
     private fun getFavouriteAreaLocation(){
-
+        binding.fabAddFavorite.setOnClickListener {
+            if (checkNetworkConnection(requireContext())) {
+                SharedPreference.getInstance(requireContext()).setMap("favorite")
+                val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.fragmentContainerView, MapFragment())
+                transaction.addToBackStack(null)
+                transaction.commit()
+            } else {
+                Toast.makeText(requireContext(), "No Internet Connection", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
     }
 
 

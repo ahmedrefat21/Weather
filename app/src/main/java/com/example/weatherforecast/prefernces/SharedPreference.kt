@@ -39,7 +39,7 @@ class SharedPreference private constructor(context: Context) : SharedPreferenceI
         editor!!.commit()
     }
     override fun getWindSpeed() = sharedPreferences!!.getString(Constants.WIND_SPEED, "metric")!!
-    
+
     override fun setLanguage(language: String){
         editor!!.putString(Constants.LANGUAGE, language)
         editor!!.commit()

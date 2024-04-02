@@ -11,7 +11,7 @@ import com.example.weatherforecast.model.entity.AlertEntity
 import com.example.weatherforecast.model.entity.FavoriteEntity
 import com.example.weatherforecast.model.entity.HomeEntity
 
-@Database(entities = [HomeEntity::class, AlertEntity::class, FavoriteEntity::class], version = 3)
+@Database(entities = [HomeEntity::class, AlertEntity::class, FavoriteEntity::class], version = 4)
 @TypeConverters(Converters::class)
 abstract class WeatherDataBase : RoomDatabase() {
     abstract fun getWeather() : WeatherDao
