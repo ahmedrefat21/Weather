@@ -1,14 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_location"
+            style="@style/SettingsCardView"
+            app:layout_constraintEnd_toStartOf="@+id/cv_wind"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                style="@style/CardViewTitle"
+                android:text="@string/location"
+                />
+
+            <RadioGroup
+                android:id="@+id/radioGroup_setting_location"
+                style="@style/RadioGroup">
+
+                <RadioButton
+                    android:id="@+id/btn_gps"
+                    style="@style/RadioButton"
+                    android:text="@string/map"
+                    tools:ignore="RtlSymmetry"
+                    android:checked="true"/>
+
+                <RadioButton
+                    android:id="@+id/btn_map"
+                    style="@style/RadioButton"
+                    android:text="@string/map" />
+            </RadioGroup>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_wind"
+            style="@style/SettingsCardView"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/cv_location"
+            app:layout_constraintTop_toTopOf="@id/cv_location">
+
+            <TextView
+                style="@style/CardViewTitle"
+                android:text="@string/wind_speed" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup_setting_wind"
+                style="@style/RadioGroup">
+
+
+                <RadioButton
+                    android:id="@+id/btn_meter"
+                    style="@style/RadioButton"
+                    android:text="meter_sec" />
+
+                <RadioButton
+                    android:id="@+id/btn_mile"
+                    style="@style/RadioButton"
+                    android:text="mile_hour"
+                    />
+            </RadioGroup>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_language"
+            style="@style/SettingsCardView"
+            app:layout_constraintEnd_toStartOf="@+id/cv_notification"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_location">
+
+            <TextView
+                style="@style/CardViewTitle"
+                android:text="@string/language" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup_setting_language"
+                style="@style/RadioGroup">
+
+
+                <RadioButton
+                    android:id="@+id/btn_english"
+                    style="@style/RadioButton"
+                    android:text="@string/english" />
+
+                <RadioButton
+                    android:id="@+id/btn_arabic"
+                    style="@style/RadioButton"
+                    android:text="@string/arabic" />
+            </RadioGroup>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_notification"
+            style="@style/SettingsCardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/cv_language"
+            app:layout_constraintTop_toTopOf="@id/cv_language">
+
+            <TextView
+                style="@style/CardViewTitle"
+
+                android:text="@string/notifications" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup_setting_notification"
+                style="@style/RadioGroup">
+
+
+                <RadioButton
+                    android:id="@+id/btn_enable_notification"
+                    style="@style/RadioButton"
+                    android:text="@string/enable" />
+
+                <RadioButton
+                    android:id="@+id/btn_disable_notification"
+                    style="@style/RadioButton"
+                    android:text="@string/disable" />
+            </RadioGroup>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_temp"
+            style="@style/SettingsCardView"
+            app:layout_constraintStart_toStartOf="@id/cv_language"
+            app:layout_constraintTop_toBottomOf="@id/cv_language">
+
+            <TextView
+                style="@style/CardViewTitle"
+                android:text="@string/temperature" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup_setting_temp"
+                style="@style/RadioGroup">
+
+
+                <RadioButton
+                    android:id="@+id/btn_celsius"
+                    style="@style/RadioButton"
+                    android:text="@string/celsius" />
+
+                <RadioButton
+                    android:id="@+id/btn_kelvin"
+                    style="@style/RadioButton"
+                    android:text="@string/kelvin" />
+
+                <RadioButton
+                    android:id="@+id/btn_fahrenheit"
+                    style="@style/RadioButton"
+                    android:text="@string/fahrenheit" />
+            </RadioGroup>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_theme"
+            style="@style/SettingsCardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cv_temp"
+            app:layout_constraintTop_toBottomOf="@+id/cv_notification">
+
+            <TextView
+                style="@style/CardViewTitle"
+                android:text="@string/temperature" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup_setting_theme"
+                style="@style/RadioGroup">
+
+
+                <RadioButton
+                    android:id="@+id/btn_lightTheme"
+                    style="@style/RadioButton"
+                    android:text="@string/celsius" />
+
+                <RadioButton
+                    android:id="@+id/btn_Dark_theme"
+                    style="@style/RadioButton"
+                    android:text="@string/kelvin" />
+
+                <RadioButton
+                    android:id="@+id/btn_defuletTheme"
+                    style="@style/RadioButton"
+                    android:text="@string/fahrenheit" />
+            </RadioGroup>
+
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
