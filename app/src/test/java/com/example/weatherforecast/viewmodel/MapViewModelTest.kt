@@ -59,7 +59,7 @@ class MapViewModelTest{
     @Test
     fun `insert favourite should add the new favourite to the list`() = runBlockingTest {
         //Given
-        val newAlert = FavoriteEntity(id = 2,50.0,30.0,"london")
+        val newAlert = FavoriteEntity(id = 2,40.0,30.0,"london")
 
         //When
         mapViewModel.insertFavoriteCity(newAlert)

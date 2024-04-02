@@ -194,7 +194,7 @@ class AlertsFragment : Fragment() , AlertsOnClickListener{
             bindingAlertLayout.btnNotification.isChecked ||
             bindingAlertLayout.btnAlert.isChecked)
         {
-            alertViewModel.hideToast()
+//            alertViewModel.hideToast()
             Log.d(TAG, "refat entity: inside")
 
             if(bindingAlertLayout.btnAlert.isChecked) {
@@ -209,7 +209,7 @@ class AlertsFragment : Fragment() , AlertsOnClickListener{
             Log.d(TAG, "refat entity: after")
         }else{
             //Toast.makeText()
-            alertViewModel.showToast()
+//            alertViewModel.showToast()
 
         }
 

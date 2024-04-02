@@ -56,15 +56,15 @@ class AlertViewModel (private val repo: Repository)
     }
 
 
-    fun showToast(){
-        viewModelScope.launch(Dispatchers.IO) {
-            isEmptyData.emit(true)
-        }
-    }
-
-    fun hideToast(){
-        isEmptyData.tryEmit(false)
-    }
+//    fun showToast(){
+//        viewModelScope.launch(Dispatchers.IO) {
+//            isEmptyData.emit(true)
+//        }
+//    }
+//
+//    fun hideToast(){
+//        isEmptyData.tryEmit(false)
+//    }
 
 
 

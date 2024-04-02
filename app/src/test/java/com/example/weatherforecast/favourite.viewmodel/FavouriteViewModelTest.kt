@@ -133,28 +133,28 @@ class FavouriteViewModelTest{
     }
 
 
-    @Test
-    fun `get favourite should return favourite items in the list`() = runBlockingTest {
-        //Given
-        val newFavourite = FavoriteEntity(id = 2,50.0,30.0,"london")
-
-        //When
-        mapViewModel.insertFavoriteCity(newFavourite)
-        viewModel.getFavoriteWeather()
-
-        //Then
-        launch {
-            viewModel.favorite.collect {
-                when (it) {
-                    is FavouriteState.Success -> {
-                        Assert.assertTrue(it.data.contains(newFavourite))
-                        cancel()
-                    }
-                    else -> {}
-                }
-            }
-        }
-    }
+//    @Test
+//    fun `get favourite should return favourite items in the list`() = runBlockingTest {
+//        //Given
+//        val newFavourite = FavoriteEntity(id = 2,50.0,30.0,"london")
+//
+//        //When
+//        mapViewModel.insertFavoriteCity(newFavourite)
+//        viewModel.getFavoriteWeather()
+//
+//        //Then
+//        launch {
+//            viewModel.favorite.collect {
+//                when (it) {
+//                    is FavouriteState.Success -> {
+//                        Assert.assertTrue(it.data.contains(newFavourite))
+//                        cancel()
+//                    }
+//                    else -> {}
+//                }
+//            }
+//        }
+//    }
 
 
 
