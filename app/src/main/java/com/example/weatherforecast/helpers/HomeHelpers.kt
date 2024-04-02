@@ -99,7 +99,22 @@ fun checkNetworkConnection(context: Context): Boolean {
 }
 
 
-
+//fun checkNetworkConnection(context: Context): Boolean {
+//    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//        val network = connectivityManager.activeNetwork ?: return false
+//        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+//        return when {
+//            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+//            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+//            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+//            else -> false
+//        }
+//    } else {
+//        val networkInfo = connectivityManager.activeNetworkInfo ?: return false
+//        return networkInfo.isConnected
+//    }
+//}
 
 private var isDialogShowing = false
 
@@ -141,6 +156,77 @@ fun formatTime(hour: Int, minute: Int): String {
 }
 
 
+fun createNotification(message : String, context : Context){
 
+    lateinit var manager: NotificationManager
+    val intent = Intent(context, MainActivity::class.java)
+    val pendingIntent = PendingIntent.getActivity(
+        context,
+        0,
+        intent,
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+    )
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel = NotificationChannel(
+            "CHANNEL_ID",
+            "CHANNEL_ID",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.description = "Description"
+
+        manager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        manager.createNotificationChannel(channel)
+    }
+
+    val builder = NotificationCompat.Builder(context!!, "CHANNEL_ID")
+        .setSmallIcon(R.drawable.ic_alert)
+        .setContentTitle("Weather Alert")
+        .setContentText(message)
+        .setPriority(NotificationCompat.PRIORITY_MAX)
+        .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
+
+    manager.notify(0, builder.build())
+
+}
+
+suspend fun createAlarmDialog(context: Context, message: String, entity: AlertEntity , flag:Int , repo : Repository) {
+    val alarmSound = MediaPlayer.create(context, R.raw.alarm_sound)
+
+    val alertDialogView = LayoutInflater.from(context).inflate(R.layout.alert_dialog_alarm, null, false)
+    val cancelBtn = alertDialogView.findViewById<Button>(R.id.alert_stop)
+    val alertMessage = alertDialogView.findViewById<TextView>(R.id.alert_description)
+
+    val layoutParams = WindowManager.LayoutParams(
+        WindowManager.LayoutParams.MATCH_PARENT,
+        WindowManager.LayoutParams.WRAP_CONTENT,
+        flag,
+        WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        PixelFormat.TRANSLUCENT
+    ).apply {
+        gravity = Gravity.TOP
+    }
+
+    val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+    withContext(Dispatchers.Main) {
+        windowManager.addView(alertDialogView, layoutParams)
+        alertDialogView.visibility = View.VISIBLE
+        alertMessage.text = message
+    }
+
+    alarmSound.start()
+    alarmSound.isLooping = true
+
+    cancelBtn.setOnClickListener {
+        alarmSound?.release()
+        windowManager.removeView(alertDialogView)
+    }
+
+    repo.deleteAlert(entity)
+}
 
 
