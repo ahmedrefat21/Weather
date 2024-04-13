@@ -89,6 +89,15 @@ class SharedPreference private constructor(context: Context) : SharedPreferenceI
         return sharedPreferences!!.getFloat(Constants.MAP_VALUE_LON,0.0f).toDouble()
     }
 
+    fun setLocationWay(location: String){
+        editor!!.putString(Constants.LOCATION, location)
+        editor!!.commit()
+    }
+
+    fun getSavedLocationWay(): String {
+        return sharedPreferences!!.getString(Constants.LOCATION, "")!!
+    }
+
 
 
 

@@ -55,4 +55,21 @@
     <string name="notification">Notification</string>
     <string name="dismiss">Dissmiss</string>
     <string name="weather_alert">Weather Alert</string>
+    <string name="degree">Degree</string>
+    <string name="speed">Speed</string>
+    <string name="feels" />
+    <string name="feels_like">Feels like</string>
+    <string name="wind">Wind</string>
+    <string name="hour_forecast">Hourly Forecast</string>
+    <string name="day_forecast">Daily Forecast</string>
+    <string name="gps">GPS</string>
+    <string name="celsius_unit">°C</string>
+    <string name="kelvin_unit">°K</string>
+    <string name="frehirnit_unit">°F</string>
+    <string name="meter_hour">mph</string>
+    <string name="mile_second">mps</string>
+    <string name="pressure_unit">hpa</string>
+    <string name="visibility_unit">" m"</string>
+    <string name="meter_sec">Meter/Second</string>
+    <string name="mile_hour">Mile/Hour</string>
 </resources>

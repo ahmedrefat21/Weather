@@ -59,8 +59,8 @@ dependencies {
     implementation ("com.airbnb.android:lottie:6.1.0")
 
     //Navigation
-    implementation ("androidx.navigation:navigation-fragment:2.5.3")
-    implementation ("androidx.navigation:navigation-ui:2.5.3")
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.7.7")
 
     //Retrofit
     implementation ("com.google.code.gson:gson:2.10.1")

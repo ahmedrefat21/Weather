@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.filters.MediumTest
 import com.example.weatherforecast.model.Alert
 import com.example.weatherforecast.model.Current
 import com.example.weatherforecast.model.Weather
@@ -19,7 +20,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-
+@MediumTest
 class LocalDataSourceImpTest{
     private lateinit var dataBase: WeatherDataBase
     private lateinit var localDataSource : LocalDataSourceImp

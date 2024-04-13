@@ -9,8 +9,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weatherforecast.databinding.ItemHourlyBinding
+import com.example.weatherforecast.helpers.checkLanguage
 import com.example.weatherforecast.helpers.getHour
+import com.example.weatherforecast.helpers.setIcon
 import com.example.weatherforecast.model.Hourly
+import java.text.NumberFormat
 
 
 class HourAdapter (private var context: Context): ListAdapter<Hourly, HourViewHolder>(
@@ -26,10 +29,13 @@ class HourAdapter (private var context: Context): ListAdapter<Hourly, HourViewHo
 
     override fun onBindViewHolder(holder: HourViewHolder, position: Int) {
         val currentObj = getItem(position)
-        holder.binding.tvHourlyTemp.text = currentObj.temp.toInt().toString()+" °"
+        var locale = checkLanguage(context)
+        val numberFormat = NumberFormat.getInstance(locale)
+        holder.binding.tvHourlyTemp.text = numberFormat.format(currentObj.temp.toInt()).toString()+" °"
         holder.binding.tvHourlyTime.text = getHour(context,currentObj.dt)
-        Glide.with(context).load("https://openweathermap.org/img/wn/"+ currentObj.weather[0].icon+"@2x.png")
-            .into(holder.binding.ivHourlyIcon)
+        setIcon(currentObj.weather[0].icon, binding.ivHourlyIcon)
+//        Glide.with(context).load("https://openweathermap.org/img/wn/"+ currentObj.weather[0].icon+"@2x.png")
+//            .into(holder.binding.ivHourlyIcon)
     }
 }
 class HourViewHolder (var binding: ItemHourlyBinding): RecyclerView.ViewHolder(binding.root)

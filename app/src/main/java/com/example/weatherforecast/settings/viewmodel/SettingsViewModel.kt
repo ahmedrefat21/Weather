@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(private val sharedPreference: SharedPreference)
     : ViewModel(){
 
-
         val language = MutableSharedFlow<String>(replay = 1)
     fun setLanguage(language: String){
         sharedPreference.setLanguage(language)
@@ -45,6 +44,14 @@ class SettingsViewModel(private val sharedPreference: SharedPreference)
         viewModelScope.launch {
            language.emit(lang)
         }
+    }
+
+    fun setLocationWay(location: String){
+        sharedPreference.setLocationWay(location)
+    }
+
+    fun getSavedLocationWay(): String {
+        return sharedPreference.getSavedLocationWay()
     }
 
 

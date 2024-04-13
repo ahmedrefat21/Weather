@@ -68,7 +68,7 @@ class FavouriteFragment : Fragment() , FavouriteClickListener {
             bundle.putParcelable("data", favoriteEntity)
             fragment.arguments = bundle
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragmentContainerView, fragment)
+            transaction.replace(R.id.nav_host_fragment, fragment)
             transaction.addToBackStack(null)
             transaction.commit()
         }else{
@@ -130,7 +130,7 @@ class FavouriteFragment : Fragment() , FavouriteClickListener {
             if (checkNetworkConnection(requireContext())) {
                 SharedPreference.getInstance(requireContext()).setMap("favorite")
                 val transaction = requireActivity().supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragmentContainerView, MapFragment())
+                transaction.replace(R.id.nav_host_fragment, MapFragment())
                 transaction.addToBackStack(null)
                 transaction.commit()
             } else {

@@ -9,9 +9,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.weatherforecast.R
 import com.example.weatherforecast.databinding.FragmentHomeBinding
 import com.example.weatherforecast.prefernces.SharedPreference
 import com.example.weatherforecast.databinding.FragmentSettingsBinding
+import com.example.weatherforecast.map.view.MapFragment
 import com.example.weatherforecast.settings.viewmodel.SettingsViewModel
 import com.example.weatherforecast.settings.viewmodel.SettingsViewModelFactory
 
@@ -41,12 +43,13 @@ class SettingsFragment : Fragment() {
         getValueOFWindSpeed()
         getValueOFLanguage()
         getValueOFNotification()
+        getValueOfLocationWay()
 
         saveTempUnit()
         saveNotification()
         saveLanguage()
         saveWindSpeed()
-
+        saveLocationWay()
 
 
     }
@@ -95,6 +98,14 @@ class SettingsFragment : Fragment() {
         else
             binding.btnFahrenheit.isChecked = true
 
+    }
+
+    private fun getValueOfLocationWay(){
+        if (settingsViewModel.getSavedLocationWay()=="GPS"){
+            binding.btnGps.isChecked = true
+        }else{
+            binding.btnMap.isChecked = true
+        }
     }
 
     private fun saveLanguage() {
@@ -154,6 +165,26 @@ class SettingsFragment : Fragment() {
             settingsViewModel.setTemperatureUnit("imperial")
             settingsViewModel.setTemperature("imperial")
         }
+    }
+
+    private fun saveLocationWay(){
+        binding.btnGps.setOnClickListener {
+            settingsViewModel.setLocationWay("GPS")
+            SharedPreference.getInstance(requireContext()).setMap("")
+        }
+
+        binding.btnMap.setOnClickListener {
+            settingsViewModel.setLocationWay("Map")
+            SharedPreference.getInstance(requireContext()).setMap("Home")
+//            val intent = Intent(requireActivity(), MapsActivity::class.java)
+//            requireActivity().startActivity(intent)
+
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.nav_host_fragment, MapFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
     }
 
 }

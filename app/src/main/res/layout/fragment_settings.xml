@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -9,18 +10,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_medium"
+            android:layout_marginVertical="@dimen/margin_small"
+            android:text="@string/settings"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="@dimen/text_giant"
+            android:textColor="@color/light_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_location"
             style="@style/SettingsCardView"
             app:layout_constraintEnd_toStartOf="@+id/cv_wind"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/textView">
 
             <TextView
                 style="@style/CardViewTitle"
-                android:text="@string/location"
-                />
+                android:text="@string/location" />
 
             <RadioGroup
                 android:id="@+id/radioGroup_setting_location"
@@ -29,9 +43,9 @@
                 <RadioButton
                     android:id="@+id/btn_gps"
                     style="@style/RadioButton"
-                    android:text="@string/map"
-                    tools:ignore="RtlSymmetry"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:text="@string/gps"
+                    tools:ignore="RtlSymmetry" />
 
                 <RadioButton
                     android:id="@+id/btn_map"
@@ -62,13 +76,12 @@
                 <RadioButton
                     android:id="@+id/btn_meter"
                     style="@style/RadioButton"
-                    android:text="meter_sec" />
+                    android:text="@string/meter_sec" />
 
                 <RadioButton
                     android:id="@+id/btn_mile"
                     style="@style/RadioButton"
-                    android:text="mile_hour"
-                    />
+                    android:text="@string/mile_hour" />
             </RadioGroup>
 
         </com.google.android.material.card.MaterialCardView>
@@ -137,6 +150,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_temp"
             style="@style/SettingsCardView"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/cv_language"
             app:layout_constraintTop_toBottomOf="@id/cv_language">
 
@@ -167,38 +181,5 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_theme"
-            style="@style/SettingsCardView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cv_temp"
-            app:layout_constraintTop_toBottomOf="@+id/cv_notification">
-
-            <TextView
-                style="@style/CardViewTitle"
-                android:text="@string/temperature" />
-
-            <RadioGroup
-                android:id="@+id/radioGroup_setting_theme"
-                style="@style/RadioGroup">
-
-
-                <RadioButton
-                    android:id="@+id/btn_lightTheme"
-                    style="@style/RadioButton"
-                    android:text="@string/celsius" />
-
-                <RadioButton
-                    android:id="@+id/btn_Dark_theme"
-                    style="@style/RadioButton"
-                    android:text="@string/kelvin" />
-
-                <RadioButton
-                    android:id="@+id/btn_defuletTheme"
-                    style="@style/RadioButton"
-                    android:text="@string/fahrenheit" />
-            </RadioGroup>
-
-        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

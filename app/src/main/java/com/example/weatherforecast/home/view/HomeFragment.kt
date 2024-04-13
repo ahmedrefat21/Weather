@@ -23,12 +23,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.weatherforecast.R
 import com.example.weatherforecast.prefernces.SharedPreference
 import com.example.weatherforecast.databinding.FragmentHomeBinding
+import com.example.weatherforecast.helpers.checkLanguage
 import com.example.weatherforecast.helpers.checkNetworkConnection
 import com.example.weatherforecast.helpers.getLocationName
 import com.example.weatherforecast.helpers.getDate
 import com.example.weatherforecast.helpers.getHour
+import com.example.weatherforecast.helpers.setIcon
 import com.example.weatherforecast.home.viewmodel.HomeViewModel
 import com.example.weatherforecast.home.viewmodel.HomeViewModelFactory
 import com.example.weatherforecast.local.LocalDataSourceImp
@@ -48,6 +51,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.NumberFormat
 
 
 class HomeFragment : Fragment() {
@@ -165,7 +169,9 @@ class HomeFragment : Fragment() {
                 override fun onLocationResult(locationResult: LocationResult) {
                     super.onLocationResult(locationResult)
                     val location = locationResult.lastLocation
+                    Log.d(TAG, "ahmed before" + SharedPreference.getInstance(requireContext()).getLatHome() + SharedPreference.getInstance(requireContext()).getLonHome())
                     SharedPreference.getInstance(requireContext()).setLatAndLonHome(location?.latitude!!,location?.longitude!!)
+                    Log.d(TAG, "ahmed after" + SharedPreference.getInstance(requireContext()).getLatHome() + SharedPreference.getInstance(requireContext()).getLonHome())
                     if (checkNetworkConnection(requireContext())){
                         getHomeWeather(location?.latitude!!,location?.longitude!!)
                     }else{
@@ -186,13 +192,22 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             settingsViewModel.language.collect(){
                 language = it
-                Log.d(TAG, "language" + language)
+                Log.d(TAG, "sharedflow language " + language)
             }
         }
 
-        homeViewModel.getWeather(lat!!,lon!!,
-            SharedPreference.getInstance(requireContext()).getUnit(),
-            SharedPreference.getInstance(requireContext()).getLanguage())
+        if (SharedPreference.getInstance(requireContext()).getMap() == "Home") {
+            homeViewModel.getWeather(SharedPreference.getInstance(requireContext()).getLat(),
+                SharedPreference.getInstance(requireContext()).getLon(),
+                SharedPreference.getInstance(requireContext()).getUnit(),
+                SharedPreference.getInstance(requireContext()).getLanguage())
+        }else{
+            homeViewModel.getWeather(SharedPreference.getInstance(requireContext()).getLatHome(),
+                SharedPreference.getInstance(requireContext()).getLonHome(),
+                SharedPreference.getInstance(requireContext()).getUnit(),
+                SharedPreference.getInstance(requireContext()).getLanguage())
+        }
+
         lifecycleScope.launch {
             homeViewModel.weather.collectLatest { result ->
                 when(result){
@@ -261,22 +276,25 @@ class HomeFragment : Fragment() {
 
     private fun initUI(weather : WeatherResponse){
         setWeatherUnit()
+        var locale = checkLanguage(requireContext())
+        val numberFormat = NumberFormat.getInstance(locale)
         var weatherUnit = setWeatherUnit()
         binding.tvCurrentAddress.text = getLocationName(requireActivity(), weather.lat, weather.lon)
         binding.tvDate.text = getDate(requireActivity(),weather.current.dt)
-        binding.tvTemp.text = weather.current.temp.toInt().toString()
+        binding.tvTemp.text = numberFormat.format(weather.current.temp.toInt()).toString()
         binding.tvDescription.text  = weather.current.weather[0].description
-        Glide.with(requireContext()).load("https://openweathermap.org/img/wn/"+ weather.current.weather[0].icon+"@4x.png")
-            .into(binding.ivIcon)
-        binding.tvPressure.text = weather.current.pressure.toString()+" hpa"
-        binding.tvHumidity.text = weather.current.humidity.toString()+" %"
-        binding.windSpeedValue.text = weather.current.wind_speed.toString()+weatherUnit
-        binding.windDegreeValue.text = weather.current.wind_deg.toString()
+        setIcon(weather.current.weather[0].icon, binding.ivIcon)
+//        Glide.with(requireContext()).load("https://openweathermap.org/img/wn/"+ weather.current.weather[0].icon+"@4x.png")
+//            .into(binding.ivIcon)
+        binding.tvPressure.text = numberFormat.format(weather.current.pressure).toString()+getString(R.string.pressure_unit)
+        binding.tvHumidity.text = numberFormat.format(weather.current.humidity).toString()+" %"
+        binding.windSpeedValue.text = numberFormat.format(weather.current.wind_speed).toString()+" "+weatherUnit
+        binding.windDegreeValue.text = numberFormat.format(weather.current.wind_deg).toString()+ " °"
         //binding.tvHumidity.text = weather.current.clouds.toString()
-        binding.tvUltraviolet.text =weather.current.uvi.toString()+" %"
-        binding.tvVisibility.text = weather.current.visibility.toString()+" m"
-        binding.progressBarValue.text = weather.current.humidity.toString()+" %"
-        binding.feelsLikeValue.text = weather.current.feels_like.toString()
+        binding.tvUltraviolet.text =numberFormat.format(weather.current.uvi).toString()+" %"
+        binding.tvVisibility.text = numberFormat.format(weather.current.visibility).toString()+getString(R.string.visibility_unit)
+        binding.progressBarValue.text = numberFormat.format(weather.current.humidity).toString()+" %"
+        binding.feelsLikeValue.text = numberFormat.format(weather.current.feels_like).toString() +" " + binding.tvTempUnit.text
         binding.tvSunrise.text = getHour(requireContext(),weather.current.sunrise)
         binding.tvSunset.text = getHour(requireContext(),weather.current.sunset)
 
@@ -284,12 +302,14 @@ class HomeFragment : Fragment() {
 
     private fun loadUI(weather: HomeEntity){
 
+        binding.tvTempUnit.text = " °"
         binding.tvCurrentAddress.text = getLocationName(requireActivity(), weather.lat, weather.lon)
         binding.tvDate.text = getDate(requireActivity(),weather.current!!.dt)
-        binding.tvTemp.text = weather.current!!.temp.toInt().toString()+" °C"
+        binding.tvTemp.text = weather.current!!.temp.toInt().toString()
         binding.tvDescription.text  = weather.current!!.weather[0].description
-        Glide.with(requireContext()).load("https://openweathermap.org/img/wn/"+ weather.current!!.weather[0].icon+"@4x.png")
-            .into(binding.ivIcon)
+        setIcon(weather.current!!.weather[0].icon, binding.ivIcon)
+//        Glide.with(requireContext()).load("https://openweathermap.org/img/wn/"+ weather.current!!.weather[0].icon+"@4x.png")
+//            .into(binding.ivIcon)
         binding.tvPressure.text = weather.current!!.pressure.toString()
         binding.tvHumidity.text = weather.current!!.humidity.toString()
         binding.windSpeedValue.text = weather.current!!.wind_speed.toString()
@@ -298,7 +318,7 @@ class HomeFragment : Fragment() {
         binding.tvUltraviolet.text =weather.current!!.uvi.toString()
         binding.tvVisibility.text = weather.current!!.visibility.toString()
         binding.progressBarValue.text = weather.current!!.humidity.toString()
-        binding.feelsLikeValue.text = weather.current!!.feels_like.toString()
+        binding.feelsLikeValue.text = weather.current!!.feels_like.toString()+ binding.tvTempUnit.text
         binding.tvSunrise.text = getHour(requireContext(),weather.current!!.sunrise)
         binding.tvSunset.text = getHour(requireContext(),weather.current!!.sunset)
     }
@@ -310,6 +330,8 @@ class HomeFragment : Fragment() {
         binding.rvDaily.visibility = View.VISIBLE
         binding.detailsLayout.visibility = View.VISIBLE
         binding.windLayout.visibility = View.VISIBLE
+        binding.tvDaily.visibility = View.VISIBLE
+        binding.tvHourly.visibility =View.VISIBLE
     }
 
     fun loading(){
@@ -319,6 +341,8 @@ class HomeFragment : Fragment() {
         binding.rvDaily.visibility = View.GONE
         binding.detailsLayout.visibility = View.GONE
         binding.windLayout.visibility = View.GONE
+        binding.tvDaily.visibility = View.GONE
+        binding.tvHourly.visibility =View.GONE
     }
 
     private fun setUpDayRecyclerView() {
@@ -342,16 +366,16 @@ class HomeFragment : Fragment() {
     fun setWeatherUnit(): String {
         var unit : String
         if (settingsViewModel.getTemperatureUnit() == "metric") {
-            binding.tvTempUnit.text = "°C"
-            unit = "mph"
+            binding.tvTempUnit.text = getString(R.string.celsius_unit)
+            unit = "mph" + getString(R.string.meter_hour)
         }
 
         else if (settingsViewModel.getTemperatureUnit() == "default") {
-            binding.tvTempUnit.text = "°K"
-            unit = "mph"
+            binding.tvTempUnit.text = getString(R.string.kelvin_unit)
+            unit = getString(R.string.meter_hour)
         }else {
-            binding.tvTempUnit.text = "°F"
-            unit = "mps"
+            binding.tvTempUnit.text = getString(R.string.frehirnit_unit)
+            unit = getString(R.string.mile_second)
         }
         return unit
 
